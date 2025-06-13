@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom global styles for Android-like look */
+body {
+  font-family: 'Roboto', sans-serif; /* Fallback for Roboto, consider adding Google Fonts */
+  background-color: #f0f2f5; /* Light gray background */
+}
+
+/* Ensure html and body take full height for flex utilities to work */
+html, body, #app {
+    height: 100%;
+}

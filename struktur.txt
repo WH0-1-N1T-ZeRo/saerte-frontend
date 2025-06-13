@@ -1,0 +1,139 @@
+--- DOKUMENTASI STRUKTUR TABEL ---
+
+> AUTH
+
+1. TABEL: AKUN_RT
+
+   DESKRIPSI:
+   Tabel ini menyimpan informasi dasar mengenai setiap akun Rukun Tetangga (RT) yang terdaftar dalam sistem.
+   Setiap RT akan memiliki satu entri di tabel ini yang mencakup detail administratif
+   dan referensi ke aset visual seperti ikon dan logo.
+
+   KOLOM:
+   - id (Primary Key, INTEGER)
+     Deskripsi: ID unik yang mengidentifikasi setiap akun RT.
+     Contoh: 1, 2
+
+   - is_active (BOOLEAN)
+     Deskripsi: Menunjukkan apakah akun RT tersebut aktif atau tidak.
+     Contoh: TRUE (aktif), FALSE (tidak aktif)
+
+   - nama_rt (VARCHAR)
+     Deskripsi: Nama lengkap dari Rukun Tetangga.
+     Contoh: 'RT 005 Cibuntu', 'RT 001 Dago'
+
+   - telepon (VARCHAR, NULLABLE)
+     Deskripsi: Nomor telepon kontak untuk akun RT. Dapat kosong.
+     Contoh: '081234567890'
+
+   - icon_id (Foreign Key ke DOKUMEN.id, INTEGER, NULLABLE)
+     Deskripsi: Referensi ke ID dokumen yang berisi gambar ikon untuk RT ini. Dapat kosong jika tidak ada ikon.
+     Contoh: 1, NULL
+
+   - logo_id (Foreign Key ke DOKUMEN.id, INTEGER, NULLABLE)
+     Deskripsi: Referensi ke ID dokumen yang berisi gambar logo untuk RT ini. Dapat kosong jika tidak ada logo.
+     Contoh: 2, NULL
+
+   - rukun_warga_id (Foreign Key ke RUKUN_WARGA.id, VARCHAR)
+     Deskripsi: Kunci asing yang menghubungkan akun RT ini dengan data Rukun Warga yang relevan.
+     Contoh: 'RW005_Cibuntu'
+
+   - administrator_id (Foreign Key ke USER.id, INTEGER)
+     Deskripsi: Referensi ke ID pengguna (USER) yang bertindak sebagai administrator utama untuk akun RT ini.
+     Contoh: 1
+
+   - created_at (DATETIME)
+     Deskripsi: Timestamp kapan data akun RT ini pertama kali dibuat.
+     Contoh: '2025-06-08 13:01:16'
+
+   - updated_at (DATETIME)
+     Deskripsi: Timestamp kapan terakhir kali data akun RT ini diperbarui.
+     Contoh: '2025-06-10 06:04:49'
+
+
+2. TABEL: PERAN_AKUN_RT
+
+   DESKRIPSI:
+   Tabel ini berfungsi sebagai tabel penghubung (junction table) untuk menetapkan peran
+   (Ketua, Sekretaris, Bendahara, dll.) warga dalam suatu akun RT. Pendekatan ini
+   lebih fleksibel dibandingkan memiliki tabel terpisah untuk setiap peran.
+
+   KOLOM:
+   - akun_id (Primary Key, Foreign Key ke AKUN_RT.id, INTEGER)
+     Deskripsi: Kunci asing yang merujuk ke ID akun RT. Merupakan bagian dari kunci utama komposit.
+     Contoh: 1
+
+   - warga_id (Primary Key, Foreign Key ke WARGA.id, INTEGER)
+     Deskripsi: Kunci asing yang merujuk ke ID warga yang memegang peran. Merupakan bagian dari kunci utama komposit.
+     Contoh: 1, 2
+
+   - jabatan (Primary Key, VARCHAR)
+     Deskripsi: Nama jabatan yang dipegang oleh warga tersebut dalam akun RT. Merupakan bagian dari kunci utama komposit.
+     Contoh: 'Ketua', 'Sekretaris', 'Bendahara'
+
+   - created_at (DATETIME)
+     Deskripsi: Timestamp kapan penetapan peran ini dibuat.
+     Contoh: '2025-06-08 13:01:16'
+
+   - updated_at (DATETIME)
+     Deskripsi: Timestamp kapan terakhir kali penetapan peran ini diperbarui.
+     Contoh: '2025-06-08 13:01:16'
+
+
+3. TABEL: USER
+
+   DESKRIPSI:
+   Tabel ini menyimpan informasi tentang semua pengguna yang dapat masuk ke dalam sistem,
+   termasuk administrator RT dan pengguna lain (misalnya, warga).
+   Ini adalah gabungan dari tabel LOGIN dan USER sebelumnya.
+
+   KOLOM:
+   - id (Primary Key, INTEGER)
+     Deskripsi: ID unik yang mengidentifikasi setiap pengguna.
+     Contoh: 1, 2
+
+   - is_active (BOOLEAN)
+     Deskripsi: Menunjukkan apakah akun pengguna aktif atau tidak.
+     Contoh: TRUE (aktif), FALSE (tidak aktif)
+
+   - akun_rt_id (Foreign Key ke AKUN_RT.id, INTEGER, NULLABLE)
+     Deskripsi: Kunci asing yang menghubungkan pengguna ini ke akun RT tertentu jika pengguna tersebut
+                adalah administrator RT. Dapat kosong jika pengguna bukan admin RT.
+     Contoh: 1, NULL
+
+   - username (VARCHAR, UNIQUE)
+     Deskripsi: Nama pengguna unik yang digunakan untuk login.
+     Contoh: 'admin_rt005_bdg', 'anggaprima'
+
+   - password_hash (VARCHAR)
+     Deskripsi: Hash kata sandi pengguna yang aman.
+     Contoh: '$2b$12$cG73RJfuMBaTUqvjkQO0.Ovvp/2PEGPZXBxvhtG1zcSYjAAHWaBAq'
+
+   - jenis (VARCHAR)
+     Deskripsi: Jenis pengguna (misal: 'administrator', 'warga', 'superadmin').
+     Contoh: 'administrator'
+
+   - foto_profil_id (Foreign Key ke DOKUMEN.id, INTEGER, NULLABLE)
+     Deskripsi: Referensi ke ID dokumen yang berisi foto profil pengguna. Dapat kosong jika tidak ada foto profil.
+     Contoh: 3, NULL
+
+   - reset_token (VARCHAR, NULLABLE)
+     Deskripsi: Token yang digunakan untuk proses reset kata sandi. Akan kosong jika tidak ada permintaan reset.
+     Contoh: 'some_random_token_string', NULL
+
+   - reset_token_expired_at (DATETIME, NULLABLE)
+     Deskripsi: Timestamp kapan reset_token akan kadaluarsa.
+     Contoh: '2025-06-11 05:52:28', NULL
+
+   - last_login_at (DATETIME, NULLABLE)
+     Deskripsi: Timestamp kapan terakhir kali pengguna berhasil login.
+     Contoh: '2025-06-10 05:52:28'
+
+   - created_at (DATETIME)
+     Deskripsi: Timestamp kapan akun pengguna ini dibuat.
+     Contoh: '2025-06-08 13:01:16'
+
+   - updated_at (DATETIME)
+     Deskripsi: Timestamp kapan terakhir kali data akun pengguna ini diperbarui.
+     Contoh: '2025-06-10 05:52:28'
+
