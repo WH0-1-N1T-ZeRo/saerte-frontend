@@ -3,22 +3,22 @@
     <router-link to="/" class="flex flex-col items-center text-sm p-2 rounded-lg transition-colors duration-200"
       :class="{ 'text-blue-600': $route.path === '/', 'text-gray-500': $route.path !== '/' }">
       <i class="fas fa-home text-md mb-1"></i>
-      <span>Beranda</span>
+      <!-- <span>Beranda</span> -->
     </router-link>
     <router-link to="/master-warga" class="flex flex-col items-center text-sm p-2 rounded-lg transition-colors duration-200"
       :class="{ 'text-blue-600': $route.path.startsWith('/master-warga'), 'text-gray-500': !$route.path.startsWith('/master-warga') }">
       <i class="fas fa-users text-md mb-1"></i>
-      <span>Warga</span>
+      <!-- <span>Warga</span> -->
     </router-link>
     <router-link to="/chat" class="flex flex-col items-center text-sm p-2 rounded-lg transition-colors duration-200"
       :class="{ 'text-blue-600': $route.path === '/chat', 'text-gray-500': $route.path !== '/chat' }">
       <i class="fas fa-comment-dots text-md mb-1"></i>
-      <span>Ngobrol</span>
+      <!-- <span>Ngobrol</span> -->
     </router-link>
     <router-link to="/profile" class="flex flex-col items-center text-sm p-2 rounded-lg transition-colors duration-200"
       :class="{ 'text-blue-600': $route.path === '/profile', 'text-gray-500': $route.path !== '/profile' }">
       <i class="fas fa-user text-md mb-1"></i>
-      <span>Profil</span>
+      <!-- <span>Profil</span> -->
     </router-link>
   </nav>
 </template>

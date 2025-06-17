@@ -7,6 +7,12 @@
 <script>
 export default {
   props: {
+    userProfile: {
+      type: Object,
+      required: true
+    }
+  },
+  props: {
     title: {
       type: String,
       default: 'Aplikasi SaERTE'

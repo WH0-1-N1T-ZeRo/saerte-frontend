@@ -2,52 +2,7 @@
   <div class="px-4 bg-gray-100 min-h-full">
     <div class="bg-white p-6 rounded-lg shadow-md mb-6">
       <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">Bank Sampah RT</h2>
-      <div class="grid md:grid-cols-2 gap-4">
-        <div>
-          <div class="flex flex-col items-center justify-center mb-6">
-            <i class="fas fa-recycle text-green-500 text-6xl mb-4"></i>
-            <p class="text-gray-700 text-lg text-center mb-2">Total Poin Anda: <span
-                class="font-bold text-green-600">1250
-                Poin</span></p>
-            <p class="text-gray-600 text-sm text-center">100 poin = Rp 1.000</p>
-          </div>
-
-          <div class="mb-6">
-            <h3 class="text-xl font-semibold text-gray-700 mb-4">Setor Sampah</h3>
-            <p class="text-gray-600 text-sm mb-4">Pilih jenis sampah dan masukkan perkiraan berat (kg) untuk disetor.
-            </p>
-
-            <div class="mb-4">
-              <label for="jenisSampah" class="block text-gray-700 text-sm font-bold mb-2">Jenis Sampah:</label>
-              <select id="jenisSampah" v-model="setorData.jenis"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                <option value="">Pilih Jenis Sampah</option>
-                <option value="plastik">Plastik (Botol, Kemasan)</option>
-                <option value="kertas">Kertas (Koran, Kardus, HVS)</option>
-                <option value="logam">Logam (Kaleng)</option>
-                <option value="kaca">Kaca (Botol Kaca)</option>
-                <option value="organik">Organik (Sisa Makanan, Daun - hanya diterima di titik tertentu)</option>
-              </select>
-            </div>
-            <div class="mb-4">
-              <label for="beratSampah" class="block text-gray-700 text-sm font-bold mb-2">Perkiraan Berat (kg):</label>
-              <input type="number" id="beratSampah" v-model.number="setorData.berat" placeholder="e.g., 2.5" step="0.1"
-                min="0"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-            </div>
-            <div class="mb-4">
-              <label for="catatan" class="block text-gray-700 text-sm font-bold mb-2">Catatan Tambahan
-                (opsional):</label>
-              <textarea id="catatan" v-model="setorData.catatan"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-20"></textarea>
-            </div>
-
-            <button @click="requestSetor" :disabled="!isValidSetor"
-              class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
-              Ajukan Setoran Sampah
-            </button>
-          </div>
-        </div>
+      <div class="grid grid-cols-1 gap-4">
         <div>
           <h3 class="text-xl font-semibold text-gray-700 mb-4">Riwayat Setoran</h3>
           <div class="space-y-3">
@@ -70,9 +25,13 @@
       </div>
     </div>
   </div>
+  <CreateButton to="/bank-sampah/new" />
 </template>
-
+<script setup>
+import CreateButton from '@/components/CreateButton.vue';
+</script>
 <script>
+
 export default {
   data() {
     return {

@@ -4,7 +4,7 @@
       <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">Status Iuran Warga</h2>
 
       <div class="mb-6 bg-blue-50 border border-blue-200 p-4 rounded-lg text-center shadow-sm">
-        <p class="text-blue-700 text-lg mb-1">Status Iuran Anda Bulan Ini (Juni 2025):</p>
+        <p class="text-blue-700 text-lg mb-1">Status Iuran Anda Bulan Ini ({{ currentMonthFormatted }}):</p>
         <p class="text-2xl font-bold" :class="{ 'text-green-600': isPaidThisMonth, 'text-red-600': !isPaidThisMonth }">
           {{ isPaidThisMonth ? 'Lunas!' : 'Belum Lunas' }}
         </p>
@@ -13,21 +13,31 @@
       <div class="mb-6">
         <h3 class="text-xl font-semibold text-gray-700 mb-4">Riwayat Pembayaran Iuran</h3>
         <div class="overflow-x-auto">
-          <table class="min-w-full bg-white border border-gray-200 rounded-lg">
-            <thead>
-              <tr class="bg-gray-100 text-left text-gray-600 uppercase text-sm leading-normal">
-                <th class="py-3 px-4 border-b border-gray-200">Periode</th>
-                <th class="py-3 px-4 border-b border-gray-200">Jumlah</th>
-                <th class="py-3 px-4 border-b border-gray-200">Tgl Bayar</th>
-                <th class="py-3 px-4 border-b border-gray-200 text-center">Status</th>
-              </tr>
-            </thead>
-            <tbody class="text-gray-700 text-sm font-light">
-              <tr v-for="iuran in sortedIuranData" :key="iuran.id" class="border-b border-gray-200 hover:bg-gray-50">
-                <td class="py-3 px-4">{{ iuran.bulan }}</td>
-                <td class="py-3 px-4">Rp {{ iuran.jumlah.toLocaleString('id-ID') }}</td>
-                <td class="py-3 px-4">{{ iuran.tanggalBayar || '-' }}</td>
-                <td class="py-3 px-4 text-center">
+          <div class="space-y-4">
+            <router-link v-for="iuran in sortedIuranData" :key="iuran.id" :to="`/iuran/new`" custom>
+              <!-- <div 
+                class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all cursor-pointer relative"> -->
+              <div
+                class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all cursor-pointer"
+                @mousedown="startPress(iuran.id)" @mouseup="cancelPress" @mouseleave="cancelPress">
+                <!-- Isi iuran -->
+                <div class="flex justify-between items-center mb-2">
+                  <h3 class="text-sm font-semibold text-gray-700">Periode</h3>
+                  <span class="text-sm text-gray-900">{{ iuran.bulan }}</span>
+                </div>
+
+                <div class="flex justify-between items-center mb-2">
+                  <h3 class="text-sm font-semibold text-gray-700">Jumlah</h3>
+                  <span class="text-sm text-green-700 font-bold">Rp {{ iuran.jumlah.toLocaleString('id-ID') }}</span>
+                </div>
+
+                <div class="flex justify-between items-center mb-2">
+                  <h3 class="text-sm font-semibold text-gray-700">Tanggal Bayar</h3>
+                  <span class="text-sm text-gray-600">{{ iuran.tanggalBayar || '-' }}</span>
+                </div>
+
+                <div class="flex justify-between items-center">
+                  <h3 class="text-sm font-semibold text-gray-700">Status</h3>
                   <span :class="{
                     'bg-green-100 text-green-800': iuran.status === 'Validate',
                     'bg-red-100 text-red-800': iuran.status === 'Confirm',
@@ -35,13 +45,34 @@
                   }" class="px-2 py-0.5 rounded-full text-xs font-semibold">
                     {{ iuran.status }}
                   </span>
-                </td>
-              </tr>
-              <tr v-if="iuranData.length === 0">
-                <td colspan="4" class="py-4 text-center text-gray-500">Belum ada riwayat iuran.</td>
-              </tr>
-            </tbody>
-          </table>
+                </div>
+
+                <!-- Tombol hapus -->
+                <div v-if="deleteMode && selectedId === iuran.id"
+                  class="fixed inset-0 flex items-center justify-center bg-white bg-opacity-50 rounded-xl gap-4">
+                  <button @click="hapusIuran(iuran.id)"
+                    class="bg-red-600 text-white px-4 py-2 rounded shadow hover:bg-red-700 transition">
+                    Hapus Iuran
+                  </button>
+                  <button @click="deleteMode = false; selectedId = null"
+                    class="bg-gray-800 text-white px-3 py-2 rounded shadow">
+                    Batal
+                  </button>
+                  <button @click="editIuraan(iuran.id); selectedId = null"
+                    class="bg-yellow-800 text-white px-3 py-2 rounded shadow">
+                    Edit data
+                  </button>
+                </div>
+              </div>
+            </router-link>
+
+
+            <!-- Pesan jika kosong -->
+            <div v-if="iuranData.length === 0" class="text-center text-gray-500 text-sm py-6">
+              Belum ada riwayat iuran.
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -74,6 +105,9 @@
 
 <script>
 import CreateButton from '@/components/CreateButton.vue';
+import axios from 'axios'; // Pastikan axios diimpor jika digunakan
+import api from '@/services/api'; // Pastikan path ini benar
+
 export default {
   name: 'App',
   components: {
@@ -81,59 +115,157 @@ export default {
   },
   data() {
     return {
-      iuranData: [
-        { id: 1, bulan: 'Juni 2025', jumlah: 50000, tanggalBayar: '2025-07-21', status: 'Draft' },
-        { id: 2, bulan: 'Mei 2025', jumlah: 50000, tanggalBayar: '2025-05-03', status: 'Validate' },
-        { id: 3, bulan: 'April 2025', jumlah: 50000, tanggalBayar: '2025-04-01', status: 'Confirm' },
-        { id: 4, bulan: 'Maret 2025', jumlah: 50000, tanggalBayar: '2025-03-05', status: 'Validate' },
-      ],
-      currentMonth: 'Juni 2025' // Simulasi bulan saat ini
+      deleteMode: false,
+      selectedId: null,
+      pressTimer: null,
+      iuranData: [],
+      currentMonthFormatted: '', // Properti untuk menyimpan bulan dan tahun saat ini yang diformat
+      token: localStorage.getItem('authToken')
     };
   },
   computed: {
+    akunId() {
+      // Jika userProfile digunakan untuk mendapatkan ID akun, pastikan itu tersedia di komponen
+      // Jika tidak, Anda mungkin perlu mengambilnya dari token atau tempat lain.
+      return this.userProfile?.id; // Sesuaikan dengan cara Anda mendapatkan akunId
+    },
     isPaidThisMonth() {
-      return this.iuranData.some(item => item.bulan === this.currentMonth && item.status === 'Validate');
+      // Memeriksa apakah ada iuran yang lunas untuk bulan saat ini
+      if (!this.currentMonthFormatted) return false; // Pastikan bulan sudah diatur
+      return this.iuranData.some(item =>
+        this.extractMonthYear(item.keterangan) === this.currentMonthFormatted &&
+        item.status === 'Pending' // Diasumsikan status API 'Lunas' dimapping ke 'Validate' di UI
+      );
     },
     sortedIuranData() {
-      // Sort by month (descending)
+      // Mengurutkan data iuran berdasarkan tahun dan bulan
       const monthOrder = {
         'Januari': 1, 'Februari': 2, 'Maret': 3, 'April': 4, 'Mei': 5, 'Juni': 6,
         'Juli': 7, 'Agustus': 8, 'September': 9, 'Oktober': 10, 'November': 11, 'Desember': 12
       };
-      return [...this.iuranData].sort((a, b) => {
-        const [aMonth, aYear] = a.bulan.split(' ');
-        const [bMonth, bYear] = b.bulan.split(' ');
 
+      return [...this.iuranData].sort((a, b) => {
+        const aKeterangan = a.keterangan || '';
+        const bKeterangan = b.keterangan || '';
+
+        const [aMonthName, aYear] = this.extractMonthYear(aKeterangan).split(' ');
+        const [bMonthName, bYear] = this.extractMonthYear(bKeterangan).split(' ');
+
+        // Urutkan berdasarkan tahun (terbaru ke terlama)
         if (aYear !== bYear) {
-          return parseInt(bYear) - parseInt(aYear); // Sort by year descending
+          return parseInt(bYear) - parseInt(aYear);
         }
-        return monthOrder[bMonth] - monthOrder[aMonth]; // Sort by month descending
+        // Jika tahun sama, urutkan berdasarkan bulan (terbaru ke terlama)
+        return monthOrder[bMonthName] - monthOrder[aMonthName];
       });
     }
   },
   methods: {
+    startPress(id) {
+      this.pressTimer = setTimeout(() => {
+        this.deleteMode = true;
+        this.selectedId = id;
+      }, 700);
+    },
+    cancelPress() {
+      clearTimeout(this.pressTimer);
+    },
+    extractMonthYear(keterangan) {
+      // Mengekstrak bulan dan tahun dari string keterangan
+      // Contoh: "Iuran bulanan Juni 2025 warga Angga Pratama" -> "Juni 2025"
+      const match = keterangan ? keterangan.match(/Iuran bulanan (\w+ \d{4})/i) : null;
+      return match ? match[1] : '';
+    },
+    getCurrentMonthAndYear() {
+      // Mendapatkan bulan dan tahun saat ini dalam format "Bulan Tahun"
+      const date = new Date();
+      const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni",
+        "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+      ];
+      const month = monthNames[date.getMonth()];
+      const year = date.getFullYear();
+      return `${month} ${year}`;
+    },
+    async fetchIuran() {
+      try {
+        const response = await api.get(`/iuran/?skip=0&limit=100&akun_id=1`, {
+          headers: {
+            'Authorization': `Bearer ${this.token}`,
+            'Accept': 'application/json'
+          }
+        });
+
+        // Memetakan data dari respons API ke format yang diharapkan oleh template
+        this.iuranData = response.data.map(item => {
+          let uiStatus = item.status;
+          // Memetakan status API ke status yang digunakan di UI untuk styling
+          if (item.status === 'Lunas') {
+            uiStatus = 'Validate';
+          } else if (item.status === 'Confirm') { // Jika ada status 'Confirm' dari API
+            uiStatus = 'Confirm';
+          } else if (item.status === 'Draft') { // Jika ada status 'Draft' dari API
+            uiStatus = 'Draft';
+          }
+          // Tambahkan mapping untuk status lain jika diperlukan
+
+          return {
+            id: item.id,
+            // Ekstrak bulan dari 'keterangan'
+            bulan: this.extractMonthYear(item.keterangan),
+            // Konversi 'nominal' string ke float
+            jumlah: parseFloat(item.nominal),
+            // Gunakan 'tangal' sebagai 'tanggalBayar'
+            tanggalBayar: item.tangal,
+            // Gunakan status yang sudah dimapping
+            status: uiStatus,
+            keterangan: item.keterangan // Pertahankan keterangan untuk extractMonthYear
+          };
+        });
+      } catch (error) {
+        console.error('Gagal memuat data iuran:', error);
+        // Handle error, misalnya menampilkan pesan kepada pengguna
+      }
+    },
+    // Metode pembayaran ini hanya simulasi, Anda dapat mengimplementasikannya lebih lanjut
     payWithQRIS() {
-      alert('Simulasi: Anda akan diarahkan ke halaman pembayaran QRIS. Setelah pembayaran, status akan otomatis Lunas.');
-      // Di aplikasi nyata, ini akan menampilkan QR code atau navigasi ke gateway pembayaran
-      this.simulatePaymentSuccess();
+      // Mengganti alert dengan modal UI kustom jika diperlukan di lingkungan produksi
+      console.log('Simulasi: Anda akan diarahkan ke halaman pembayaran QRIS.');
+      // this.simulatePaymentSuccess(); // Panggil ini jika Anda ingin mensimulasikan pembayaran berhasil
     },
     payWithEwallet() {
-      alert('Simulasi: Anda akan diarahkan ke pilihan E-Wallet. Setelah pembayaran, status akan otomatis Lunas.');
-      // Di aplikasi nyata, ini akan navigasi ke halaman E-Wallet
-      this.simulatePaymentSuccess();
+      console.log('Simulasi: Anda akan diarahkan ke pilihan E-Wallet.');
+      // this.simulatePaymentSuccess();
     },
     payWithCash() {
-      alert('Silakan hubungi Bendahara RT untuk pembayaran tunai. Status akan diperbarui setelah pembayaran diterima.');
-      // Di aplikasi nyata, ini mungkin mencatat permintaan bayar tunai
-    },
-    simulatePaymentSuccess() {
-      const index = this.iuranData.findIndex(item => item.bulan === this.currentMonth);
-      if (index !== -1) {
-        this.iuranData[index].status = 'Lunas';
-        this.iuranData[index].tanggalBayar = new Date().toISOString().slice(0, 10);
-        alert('Pembayaran iuran bulan ini berhasil disimulasikan lunas!');
+      console.log('Silakan hubungi Bendahara RT untuk pembayaran tunai.');
+    }, async hapusIuran(id) {
+      if (!confirm("Yakin ingin menghapus iuran ini?")) return;
+      try {
+        await api.delete(`/iuran/${id}`, {
+          headers: {
+            'Authorization': `Bearer ${this.token}`,
+            'Accept': 'application/json'
+          }
+        });
+        alert("Iuran berhasil dihapus.");
+        // Set bulan dan tahun saat ini ketika komponen dimuat
+        this.currentMonthFormatted = this.getCurrentMonthAndYear();
+        // Panggil fungsi fetchIuran untuk memuat data
+        this.fetchIuran();
+      } catch (error) {
+        console.error("Gagal menghapus iuran:", error);
+        alert("Terjadi kesalahan saat menghapus.");
       }
+    },
+    async editIuraan(id){
+      this.$router.push(`/iuran/edit/${id}`)
     }
+  },
+  mounted() {
+    // Set bulan dan tahun saat ini ketika komponen dimuat
+    this.currentMonthFormatted = this.getCurrentMonthAndYear();
+    // Panggil fungsi fetchIuran untuk memuat data
+    this.fetchIuran();
   }
 };
 </script>
