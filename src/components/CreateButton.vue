@@ -1,6 +1,6 @@
 <template>
   <button
-    class="fixed bottom-18 right-5 w-16 h-16 rounded-full bg-blue-600 text-white text-2xl flex items-center justify-center border-none shadow-lg cursor-pointer transition-all hover:bg-blue-700 hover:scale-105 active:scale-50 z-50"
+    class="fixed bottom-18 right-5 w-10 h-10 rounded-full bg-blue-600 text-white text-2xl flex items-center justify-center border-none shadow-lg cursor-pointer transition-all hover:bg-blue-700 hover:scale-105 active:scale-100 z-50"
     @click="handleClick"
   >
     <i class="fas fa-plus"></i>

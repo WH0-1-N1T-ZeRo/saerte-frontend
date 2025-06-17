@@ -8,54 +8,31 @@
         <p class="text-gray-800 font-semibold text-lg">{{ userProfile.no_telp }}</p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+      <div class="grid grid-cols-2 gap-4 mb-4">
         <div>
           <label class="block text-gray-600 text-sm font-medium mb-1">Nama:</label>
           <p class="text-gray-800">{{ userProfile.nama }}</p>
         </div>
         <div>
-          <label class="block text-gray-600 text-sm font-medium mb-1">Gender:</label>
-          <p class="text-gray-800">{{ userProfile.gender }}</p>
+          <label class="block text-gray-600 text-sm font-medium mb-1">nik:</label>
+          <p class="text-gray-800">{{ userProfile.nik }}</p>
         </div>
-        <div>
+        <!-- <div>
           <label class="block text-gray-600 text-sm font-medium mb-1">Umur:</label>
           <p class="text-gray-800">{{ userProfile.umur }} tahun</p>
-        </div>
-        <div>
-          <label class="block text-gray-600 text-sm font-medium mb-1">Pekerjaan:</label>
-          <p class="text-gray-800">{{ userProfile.pekerjaan }}</p>
-        </div>
-        <div>
-          <label class="block text-gray-600 text-sm font-medium mb-1">Golongan Darah:</label>
-          <p class="text-gray-800">{{ userProfile.golonganDarah }}</p>
-        </div>
+        </div> -->
+        
         <div>
           <label class="block text-gray-600 text-sm font-medium mb-1">Hoby:</label>
           <p class="text-gray-800">{{ userProfile.hoby.join(', ') }}</p>
         </div>
-        <div class="md:col-span-2">
+        <div>
           <label class="block text-gray-600 text-sm font-medium mb-1">Interes:</label>
           <p class="text-gray-800">{{ userProfile.interes.join(', ') }}</p>
         </div>
-      </div>
-
-      <h3 class="text-xl font-bold text-gray-800 mb-3 mt-6">Alamat Tinggal</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <div>
-          <label class="block text-gray-600 text-sm font-medium mb-1">Desa/Kelurahan:</label>
-          <p class="text-gray-800">{{ userProfile.desa }}</p>
-        </div>
-        <div>
-          <label class="block text-gray-600 text-sm font-medium mb-1">RW:</label>
-          <p class="text-gray-800">{{ userProfile.rw }}</p>
-        </div>
-        <div>
-          <label class="block text-gray-600 text-sm font-medium mb-1">RT:</label>
+          <label class="block text-gray-600 text-sm font-medium mb-1">Alamat:</label>
           <p class="text-gray-800">{{ userProfile.rt }}</p>
-        </div>
-        <div>
-          <label class="block text-gray-600 text-sm font-medium mb-1">No. Rumah:</label>
-          <p class="text-gray-800">{{ userProfile.noRumah }}</p>
         </div>
       </div>
 

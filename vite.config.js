@@ -13,4 +13,12 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  server: {
+    host: '0.0.0.0',
+    port: 8081,
+    strictPort: true,
+    hmr: {
+      host: 'dev.saerte.web.id', // supaya HMR (Hot Module Replacement) bisa jalan di domain
+    }
+  }
 })

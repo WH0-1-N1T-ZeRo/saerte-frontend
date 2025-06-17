@@ -1,18 +1,21 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import LoginPage from '../views/LoginPage.vue';
-import LandingPage from '../views/LandingPage.vue';
-import ProfilePage from '../views/ProfilePage.vue';
-import SuratPengantarPage from '../views/MainMenu/SuratPengantarPage.vue';
-import MasterWargaPage from '../views/MasterWargaPage.vue';
-import KegiatanPage from '../views/MainMenu/KegiatanPage.vue';
-import SaranKeluhanPage from '../views/MainMenu/SaranKeluhanPage.vue';
-import IuranWargaPage from '../views/MainMenu/IuranWargaPage.vue';
-import KeuanganRTPage from '../views/MainMenu/KeuanganRTPage.vue';
-import ChatListPage from '../views/ChatListPage.vue'; // NEW
-import ChatRoomPage from '../views/ChatRoomPage.vue'; // Renamed
-import DashboardPage from '../views/MainMenu/DashboardPage.vue';
-import BankSampahPage from '../views/MainMenu/BankSampahPage.vue'; // NEW
-import CCTVPage from '../views/MainMenu/CCTVPage.vue'; // Import CCTVPage
+import LoginPage from '@/views/LoginPage.vue';
+import LandingPage from '@/views/LandingPage.vue';
+import ProfilePage from '@/views/ProfilePage.vue';
+import SuratPengantarPage from '@/views/MainMenu/SuratPengantarPage.vue';
+import MasterWargaPage from '@/views/MasterWargaPage.vue';
+import KegiatanPage from '@/views/MainMenu/KegiatanPage.vue';
+import SaranKeluhanPage from '@/views/MainMenu/SaranKeluhanPage.vue';
+import IuranWargaPage from '@/views/MainMenu/IuranWargaPage.vue';
+import KeuanganRTPage from '@/views/MainMenu/KeuanganRTPage.vue';
+import ChatListPage from '@/views/ChatListPage.vue'; // NEW
+import ChatRoomPage from '@/views/ChatRoomPage.vue'; // Renamed
+import DashboardPage from '@/views/MainMenu/DashboardPage.vue';
+import BankSampahPage from '@/views/MainMenu/BankSampahPage.vue'; // NEW
+import CCTVPage from '@/views/MainMenu/CCTVPage.vue'; // Import CCTVPage
+import FormIuran from '@/views/Form/FormIuran.vue'; // Import FormIuran
+import FormIuranEdit from '@/views/Form/FormIuranEdit.vue'
+import FormBankSampah from '@/views/Form/FormBankSampah.vue'
 
 const routes = [
   {
@@ -99,11 +102,32 @@ const routes = [
     component: BankSampahPage,
     meta: { requiresAuth: true, title: 'Bank Sampah RT' }
   },
+  {
+    path: '/bank-sampah/new',
+    name: 'FormBankSampah',
+    component: FormBankSampah,
+    meta: { requiresAuth: true, title: 'Tambah Setoran Sampah' }
+  },
+
   // Redirect ke login jika path tidak ditemukan dan belum login
   {
     path: '/:catchAll(.*)',
     redirect: { name: 'Login' }
+  },
+  {
+    path: '/iuran/new',
+    name: 'FormIuran',
+    component: FormIuran,
+    meta: { requiresAuth: true, title: 'Iuran' }
+  },
+  {
+    path: '/iuran/edit/:id',
+    name: 'EditIuran',
+    component: FormIuranEdit,
+    props: true, // agar id bisa diterima sebagai prop
+    meta: { requiresAuth: true, title: 'Edit Iuran' }
   }
+
 ];
 
 const router = createRouter({
