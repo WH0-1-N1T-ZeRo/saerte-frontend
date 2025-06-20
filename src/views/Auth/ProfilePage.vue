@@ -21,7 +21,7 @@
           <label class="block text-gray-600 text-sm font-medium mb-1">Umur:</label>
           <p class="text-gray-800">{{ userProfile.umur }} tahun</p>
         </div> -->
-        
+
         <div>
           <label class="block text-gray-600 text-sm font-medium mb-1">Hoby:</label>
           <p class="text-gray-800">{{ userProfile.hoby.join(', ') }}</p>
@@ -38,19 +38,25 @@
 
       <h3 class="text-xl font-bold text-gray-800 mb-3 mt-6">Data Kartu Keluarga</h3>
       <div class="bg-gray-50 p-4 rounded-lg">
-        <div v-for="(anggota, index) in userProfile.dataKk" :key="index" class="mb-3 pb-3 border-b border-gray-200 last:border-b-0 last:mb-0 last:pb-0">
-          <p class="font-semibold text-gray-800">{{ anggota.nama }} <span class="text-sm text-gray-500">({{ anggota.status }})</span></p>
+        <div v-for="(anggota, index) in userProfile.dataKk" :key="index"
+          class="mb-3 pb-3 border-b border-gray-200 last:border-b-0 last:mb-0 last:pb-0">
+          <p class="font-semibold text-gray-800">{{ anggota.nama }} <span class="text-sm text-gray-500">({{
+            anggota.status }})</span></p>
           <p class="text-sm text-gray-600">NIK: {{ anggota.nik }}</p>
         </div>
         <p v-if="userProfile.dataKk.length === 0" class="text-gray-500 italic">Data KK belum terisi.</p>
       </div>
 
-      <p class="mt-6 text-sm text-gray-600 text-center">Tipe Akses: <span class="font-bold text-blue-600">{{ userProfile.typeAkses }}</span></p>
+      <p class="mt-6 text-sm text-gray-600 text-center">Tipe Akses: <span class="font-bold text-blue-600">{{
+        userProfile.typeAkses }}</span></p>
 
-      <button class="mt-8 w-full bg-blue-500 text-white py-3 rounded-lg font-semibold hover:bg-blue-600 transition-colors duration-200">
+      <router-link to="/profile/edit/"
+        class="mt-8 block w-full text-center bg-blue-500 text-white py-3 rounded-lg font-semibold hover:bg-blue-600 transition-colors duration-200">
         Edit Profil
-      </button>
-      <button @click="logout" class="mt-4 w-full bg-red-500 text-white py-3 rounded-lg font-semibold hover:bg-red-600 transition-colors duration-200">
+      </router-link>
+
+      <button @click="logout"
+        class="mt-4 w-full bg-red-500 text-white py-3 rounded-lg font-semibold hover:bg-red-600 transition-colors duration-200">
         Logout
       </button>
     </div>

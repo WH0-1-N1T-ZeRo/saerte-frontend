@@ -25,7 +25,7 @@
     <div class="grid sm:grid-cols-4 gap-2">
       <FeatureCard title="Surat Pengantar" @click="$router.push('/surat-pengantar')" />
       <FeatureCard title="Iuran Warga" @click="$router.push('/iuran-warga')" />
-      <FeatureCard title="Bank Sampah" @click="$router.push('/bank-sampah')" />
+      <FeatureCard title="Bank Sampah" @click="$router.push('/bank')" />
       <FeatureCard title="CCTV" @click="$router.push('/cctv')" />
       <FeatureCard title="Saran dan Aduan" @click="$router.push('/saran-keluhan')" />
 

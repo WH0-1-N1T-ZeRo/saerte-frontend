@@ -1,17 +1,17 @@
 <template>
-  <div class="px-4 bg-gray-100 min-h-full">
+  <div class="bg-gray-100 min-h-full">
     <div class="bg-white p-6 rounded-lg shadow-md mb-6">
-      <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">Status Iuran Warga</h2>
+      <!-- <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">Status Iuran Warga</h2> -->
 
       <div class="mb-6 bg-blue-50 border border-blue-200 p-4 rounded-lg text-center shadow-sm">
-        <p class="text-blue-700 text-lg mb-1">Status Iuran Anda Bulan Ini ({{ currentMonthFormatted }}):</p>
+        <p class="text-blue-700 text-lg mb-1">Iuran Bulan {{ currentMonthFormatted }}:</p>
         <p class="text-2xl font-bold" :class="{ 'text-green-600': isPaidThisMonth, 'text-red-600': !isPaidThisMonth }">
           {{ isPaidThisMonth ? 'Lunas!' : 'Belum Lunas' }}
         </p>
       </div>
 
       <div class="mb-6">
-        <h3 class="text-xl font-semibold text-gray-700 mb-4">Riwayat Pembayaran Iuran</h3>
+        <!-- <h3 class="text-xl font-semibold text-gray-700 mb-4">Riwayat Pembayaran Iuran</h3> -->
         <div class="overflow-x-auto">
           <div class="space-y-4">
             <router-link v-for="iuran in sortedIuranData" :key="iuran.id" :to="`/iuran/new`" custom>
@@ -22,13 +22,23 @@
                 @mousedown="startPress(iuran.id)" @mouseup="cancelPress" @mouseleave="cancelPress">
                 <!-- Isi iuran -->
                 <div class="flex justify-between items-center mb-2">
-                  <h3 class="text-sm font-semibold text-gray-700">Periode</h3>
-                  <span class="text-sm text-gray-900">{{ iuran.bulan }}</span>
+                  <h3 class="text-sm font-semibold text-gray-700">{{ iuran.bulan }}</h3>
+                  <div class="flex justify-between items-center">
+                  <h3 class="text-sm font-semibold text-gray-800"></h3>
+                  <span :class="{
+                    'bg-green-100 text-gray-800': iuran.status === 'Validate',
+                    'bg-red-100 text-gray-800': iuran.status === 'Pending',
+                    'bg-gray-100 text-gray-800': iuran.status === 'Draft',
+                  }" class="px-2 py-0.5 rounded-full text-xs font-semibold uppercase">
+                    {{ iuran.status }}
+                  </span>
                 </div>
+                </div>
+                
 
                 <div class="flex justify-between items-center mb-2">
                   <h3 class="text-sm font-semibold text-gray-700">Jumlah</h3>
-                  <span class="text-sm text-green-700 font-bold">Rp {{ iuran.jumlah.toLocaleString('id-ID') }}</span>
+                  <span class="text-sm text-green-700 font-bold">{{ iuran.jumlah.toLocaleString('id-ID') }}</span>
                 </div>
 
                 <div class="flex justify-between items-center mb-2">
@@ -36,16 +46,7 @@
                   <span class="text-sm text-gray-600">{{ iuran.tanggalBayar || '-' }}</span>
                 </div>
 
-                <div class="flex justify-between items-center">
-                  <h3 class="text-sm font-semibold text-gray-700">Status</h3>
-                  <span :class="{
-                    'bg-green-100 text-green-800': iuran.status === 'Validate',
-                    'bg-red-100 text-red-800': iuran.status === 'Confirm',
-                    'bg-gray-100 text-blue-800': iuran.status === 'Draft',
-                  }" class="px-2 py-0.5 rounded-full text-xs font-semibold">
-                    {{ iuran.status }}
-                  </span>
-                </div>
+                
 
                 <!-- Tombol hapus -->
                 <div v-if="deleteMode && selectedId === iuran.id"
@@ -140,8 +141,8 @@ export default {
     sortedIuranData() {
       // Mengurutkan data iuran berdasarkan tahun dan bulan
       const monthOrder = {
-        'Januari': 1, 'Februari': 2, 'Maret': 3, 'April': 4, 'Mei': 5, 'Juni': 6,
-        'Juli': 7, 'Agustus': 8, 'September': 9, 'Oktober': 10, 'November': 11, 'Desember': 12
+        'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4, 'Mei': 5, 'Jun': 6,
+        'Jul': 7, 'Agu': 8, 'Sep': 9, 'Okt': 10, 'Nov': 11, 'Des': 12
       };
 
       return [...this.iuranData].sort((a, b) => {
@@ -165,7 +166,7 @@ export default {
       this.pressTimer = setTimeout(() => {
         this.deleteMode = true;
         this.selectedId = id;
-      }, 700);
+      }, 100);
     },
     cancelPress() {
       clearTimeout(this.pressTimer);
@@ -174,13 +175,13 @@ export default {
       // Mengekstrak bulan dan tahun dari string keterangan
       // Contoh: "Iuran bulanan Juni 2025 warga Angga Pratama" -> "Juni 2025"
       const match = keterangan ? keterangan.match(/Iuran bulanan (\w+ \d{4})/i) : null;
-      return match ? match[1] : '';
+      return match ? match[1] : 'Jan 2025';
     },
     getCurrentMonthAndYear() {
       // Mendapatkan bulan dan tahun saat ini dalam format "Bulan Tahun"
       const date = new Date();
-      const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni",
-        "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+      const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
+        'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'
       ];
       const month = monthNames[date.getMonth()];
       const year = date.getFullYear();

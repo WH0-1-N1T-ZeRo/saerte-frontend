@@ -8,7 +8,7 @@ import DynamicForm from '@/components/DynamicForm.vue'
 import { generateMonthYearOptions } from '@/utils/otomation_fuction.js';
 import api from '../../services/api';
 import router from '@/router';
-
+ 
 export default {
   components: {
     DynamicForm

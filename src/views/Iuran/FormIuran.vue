@@ -19,7 +19,7 @@ export default {
     return {
       // Contoh data yang akan diedit. Ini akan menjadi prop 'model'
       existingUserData: {
-        id: 1,
+        // id: 1,
         periode: 'Juni 2025',
         tanggal: '2025-06-15',
         jumlah: 50.000,
@@ -28,12 +28,13 @@ export default {
       },
       // Definisi field untuk form Anda
       userFields: [
-        { name: 'id', label: 'Nomor', type: 'int' },
+        // { name: 'id', label: 'Nomor', type: 'int' },
         { name: 'periode', label: 'Periode', type: 'select', options: this.monthYearOptions },
         { name: 'tanggal', label: 'Tanggal', type: 'date' },
-        { name: 'jumlah', label: 'Jumlah Pembayaran', type: 'number' },
-        { name: 'metodePembayaran', label: 'Metode Pembayaran', type: 'select', options: ['QRIS', 'E-Wallet', 'Cash'] },
-        { name: 'deskripsi', label: 'Description', type: 'textarea' },
+        { name: 'jumlah', label: 'Jumlah', type: 'number' },
+        { name: 'metodePembayaran', label: 'Metode', type: 'select', options: ['QRIS', 'E-Wallet', 'Cash'] },
+        { name: 'deskripsi', label: 'Keterangan', type: 'textarea' },
+        { name: 'bukti_pembayaran', label: 'Bukti', type: 'file'}
       ],
       token: localStorage.getItem('authToken')
     };
