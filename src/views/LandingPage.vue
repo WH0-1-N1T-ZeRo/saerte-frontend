@@ -25,7 +25,7 @@
     <div class="grid sm:grid-cols-4 gap-2">
       <FeatureCard title="Surat Pengantar" @click="$router.push('/surat-pengantar')" />
       <FeatureCard title="Iuran Warga" @click="$router.push('/iuran-warga')" />
-      <FeatureCard title="Bank Sampah" @click="$router.push('/bank-sampah')" />
+      <FeatureCard title="Bank Sampah" @click="$router.push('/bank')" />
       <FeatureCard title="CCTV" @click="$router.push('/cctv')" />
       <FeatureCard title="Saran dan Aduan" @click="$router.push('/saran-keluhan')" />
 
@@ -40,7 +40,7 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
-import FeatureCard from '../components/FeatureCard.vue'
+import FeatureCard from '@/components/FeatureCard.vue'
 
 const images = [
   'https://static.promediateknologi.id/crop/0x0:0x0/750x500/webp/photo/p1/332/2023/10/30/vintage-pahlawan-heroes-day-background-with-fist_23-2148701986-3768961948.jpg',

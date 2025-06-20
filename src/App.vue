@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container min-h-screen bg-gray-100 flex flex-col">
+  <div class="app-container min-h-screen bg-gray-100 flex flex-col p-0 m-0">
     <Navbar v-if="isLoggedIn" :title="$route.meta.title" />
 
     <main class="flex-grow overflow-auto" :class="{'pt-16': isLoggedIn, 'pb-16': isLoggedIn}">
@@ -13,57 +13,69 @@
 <script>
 import Navbar from './components/Navbar.vue';
 import BottomNav from './components/BottomNav.vue';
+import { useUserStore } from './stores/user'; // Import store Pinia
+import { mapState } from 'pinia'; // Helper untuk memetakan state Pinia
 
 export default {
   components: {
     Navbar,
     BottomNav,
   },
-  data() {
-    return {
-      isLoggedIn: localStorage.getItem('isLoggedIn') === 'true',
-      userProfile: {
-        no_telp: localStorage.getItem('loggedInPhone') || '',
-        nama: 'Ahmad Fauzi',
-        gender: 'Pria',
-        umur: 30,
-        pekerjaan: 'Pengembang Web',
-        golonganDarah: 'A',
-        hoby: ['Membaca', 'Coding', 'Olahraga'],
-        interes: ['Teknologi', 'Komunitas', 'Lingkungan'],
-        desa: 'Karangsari',
-        rw: '001',
-        rt: '002',
-        noRumah: '15',
-        dataKk: [
-          { nama: 'Siti Aminah', status: 'Istri', nik: '3501xxxxxxxxxxxx' },
-          { nama: 'Budi Santoso', status: 'Anak', nik: '3501xxxxxxxxxxxx' }
-        ],
-        typeAkses: 'Warga' || 'Ketua' || 'Serkertaris' || 'Bendahara', // Default type, can be changed based on user role
-      },
-    };
+  computed: {
+    // Memetakan state dari Pinia store
+    ...mapState(useUserStore, {
+      isLoggedIn: 'getIsLoggedIn',
+      userProfile: 'getUserProfile',
+    }),
+    // Logic untuk menampilkan Navbar dan BottomNav
+    showNavbarAndBottomNav() {
+      // Sembunyikan Nav jika rute adalah 'Login' atau 'Register' (jika ada)
+      return this.$route.name !== 'Login'; // Anda bisa menambahkan rute lain di sini
+    }
   },
   created() {
-    if (!this.isLoggedIn && this.$route.name !== 'Login') {
-      this.$router.push({ name: 'Login' });
-    } else if (this.isLoggedIn && this.$route.name === 'Login') {
-      this.$router.push({ name: 'Landing' });
+    // Menggunakan action dari Pinia store
+    const userStore = useUserStore();
+
+    // Redirect jika belum login atau sudah login tapi di halaman login
+    // if (!this.isLoggedIn && this.$route.name !== 'Login') {
+    //   this.$router.push({ name: 'Login' });
+    // } else if (this.isLoggedIn && this.$route.name === 'Login') {
+    //   this.$router.push({ name: 'Landing' });
+    // }
+
+    // Panggil fetchUserProfile saat aplikasi dimuat, agar data profil tersedia
+    // Ini akan menggunakan cache jika ada, atau fetch dari API jika tidak ada/diperlukan.
+    if (this.isLoggedIn) {
+      userStore.fetchUserProfile();
+    }
+  },
+  watch: {
+    // Awasi perubahan rute untuk mungkin memicu fetch profil jika diperlukan
+    // Misalnya, jika pengguna langsung masuk ke halaman non-login setelah refresh
+    '$route.name': {
+      immediate: true, // Jalankan watch saat komponen pertama kali dimuat
+      handler(newRouteName) {
+        const userStore = useUserStore();
+        if (userStore.getIsLoggedIn && userStore.getUserProfile.id === null) {
+          // Jika sudah login tapi profil belum terisi (mungkin setelah hard refresh)
+          userStore.fetchUserProfile();
+        }
+      }
     }
   },
   methods: {
-    handleLoginSuccess(phoneNumber) {
-      this.isLoggedIn = true;
-      this.userProfile.no_telp = phoneNumber;
-      localStorage.setItem('isLoggedIn', 'true');
-      localStorage.setItem('loggedInPhone', phoneNumber);
+    // Panggil aksi dari Pinia store
+    handleLoginSuccess(data) {
+      const userStore = useUserStore();
+      userStore.handleLogin(data.phoneNumber, data.authToken); // Pastikan login success memberikan token
       this.$router.push({ name: 'Landing' });
     },
     handleLogout() {
-      this.isLoggedIn = false;
-      localStorage.removeItem('isLoggedIn');
-      localStorage.removeItem('loggedInPhone');
+      const userStore = useUserStore();
+      userStore.logout();
       this.$router.push({ name: 'Login' });
-    }
+    },
   },
 };
 </script>

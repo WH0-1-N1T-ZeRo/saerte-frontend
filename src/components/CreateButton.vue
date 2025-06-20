@@ -1,10 +1,15 @@
 <template>
-  <button
-    class="fixed bottom-18 right-5 w-16 h-16 rounded-full bg-blue-600 text-white text-2xl flex items-center justify-center border-none shadow-lg cursor-pointer transition-all hover:bg-blue-700 hover:scale-105 active:scale-50 z-50"
-    @click="handleClick"
-  >
-    <i class="fas fa-plus"></i>
-  </button>
+  <!-- Pembungkus FAB agar berada di kanan dalam batas max-w -->
+  <div class="fixed bottom-18 left-0 right-0 z-50 flex justify-center">
+    <div class="w-full max-w-[480px] relative px-8">
+      <button
+        class="absolute right-8 bottom-5 w-14 h-14 rounded-full bg-blue-500 text-white text-2xl flex items-center justify-center border-none shadow-lg cursor-pointer transition-all hover:bg-blue-700 hover:scale-105 active:scale-100"
+        @click="handleClick"
+      >
+        <i class="fas fa-plus font-bold"></i>
+      </button>
+    </div>
+  </div>
 </template>
 
 <script>

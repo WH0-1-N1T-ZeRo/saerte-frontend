@@ -14,7 +14,7 @@
           <thead>
             <tr class="bg-gray-100 text-left text-gray-600 uppercase text-sm leading-normal">
               <th class="py-3 px-4 border-b border-gray-200">Nama</th>
-              <th class="py-3 px-4 border-b border-gray-200">RT/RW</th>
+              <th class="py-3 px-4 border-b border-gray-200">NIK</th>
               <th class="py-3 px-4 border-b border-gray-200">Status</th>
               <th class="py-3 px-4 border-b border-gray-200 hidden">Aksi</th>
             </tr>
@@ -22,7 +22,7 @@
           <tbody class="text-gray-700 text-sm font-light">
             <tr v-for="warga in filteredWarga" :key="warga.id" class="border-b border-gray-200 hover:bg-gray-50">
               <td class="py-3 px-4">{{ warga.nama }}</td>
-              <td class="py-3 px-4">{{ warga.rt }}/{{ warga.rw }}</td>
+              <td class="py-3 px-4">{{ warga.nik }}</td>
               <td class="py-3 px-4">{{ warga.status }}</td>
                 <td class="py-3 px-4 text-center hidden">
                   <button @click="viewDetail(warga.id)" class="text-blue-500 hover:text-blue-700 text-lg mx-1">
@@ -52,44 +52,63 @@
 </template>
 
 <script>
+import axios from 'axios';
+import api from '../services/api';
+
 export default {
   data() {
     return {
       searchQuery: '',
-      wargaData: [
-        { id: 1, nama: 'Budi Santoso', rt: '002', rw: '001', status: 'Aktif', noRumah: '15' },
-        { id: 2, nama: 'Siti Aminah', rt: '002', rw: '001', status: 'Aktif', noRumah: '15' },
-        { id: 3, nama: 'Joko Susanto', rt: '003', rw: '001', status: 'Aktif', noRumah: '22' },
-        { id: 4, nama: 'Fitriani Dewi', rt: '001', rw: '001', status: 'Aktif', noRumah: '8' },
-        { id: 5, nama: 'Agus Ramadhan', rt: '002', rw: '001', status: 'Non-aktif', noRumah: '10' },
-      ],
+      wargaData: [],
       filteredWarga: [],
+      token: localStorage.getItem('authToken'),
     };
   },
-  created() {
-    this.filteredWarga = this.wargaData;
+  mounted() {
+    this.fetchWarga();
   },
   methods: {
+    async fetchWarga() {
+      try {
+        const response = await api.get('/warga/', {
+          headers: {
+            'Authorization': `Bearer ${this.token}`,
+            'Accept': 'application/json'
+          }
+        });
+
+        // Map response data untuk menyederhanakan tampilannya
+        this.wargaData = response.data.map((item) => ({
+          id: item.id,
+          nama: item.ktp_obj?.nama || 'Tidak ada nama',
+          nik: item.nik_id || '-', // atau bisa pakai informasi RT asli jika tersedia
+          status: item.ktp_obj?.active ? 'Aktif' : 'Non-aktif',
+          noRumah: item.ktp_obj?.kk_urutan?.toString() || '-',
+        }));
+
+        this.filteredWarga = this.wargaData;
+      } catch (error) {
+        console.error("Gagal mengambil data warga:", error);
+      }
+    },
     filterWarga() {
       const query = this.searchQuery.toLowerCase();
       this.filteredWarga = this.wargaData.filter(warga =>
         warga.nama.toLowerCase().includes(query) ||
-        warga.rt.includes(query) ||
-        warga.rw.includes(query) ||
+        warga.nik.includes(query) ||
         warga.noRumah.includes(query)
       );
     },
     viewDetail(id) {
       alert('Melihat detail warga ID: ' + id);
-      // Di aplikasi nyata, Anda bisa navigasi ke halaman detail warga
     },
     editWarga(id) {
       alert('Mengedit warga ID: ' + id);
-      // Di aplikasi nyata, Anda bisa navigasi ke halaman edit warga
     }
   }
 };
 </script>
+
 
 <style scoped>
 /* Scoped styles if needed, but Tailwind handles most of it */

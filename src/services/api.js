@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api', // Ganti dengan URL dasar API backend Anda
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -33,7 +33,7 @@ api.interceptors.response.use(
       localStorage.removeItem('authToken');
       // Anda bisa menggunakan Vue Router untuk mengarahkan:
       // import router from '@/router';
-      // router.push('/login');
+      router.push('/login');
       console.warn('Token kadaluarsa atau tidak valid. Mengarahkan ke halaman login...');
     }
     return Promise.reject(error);
