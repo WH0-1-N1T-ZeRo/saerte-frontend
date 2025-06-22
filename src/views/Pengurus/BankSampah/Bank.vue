@@ -19,14 +19,22 @@
         </div>
 
         <div v-else class="grid grid-cols-1 gap-4">
-            <router-link v-for="bank in banks" :key="bank.id" :to="{ name: 'BankSampah', params: { id: bank.id } }"
+            <router-link v-for="bank in banks" :key="bank.id" :to="{ name: 'BankSampahPengurus', params: { id: bank.id } }"
                 class="block">
+
                 <div
-                    class="rounded-2xl bg-white border border-gray-300 pt-4 shadow-md cursor-pointer hover:shadow-lg transition-shadow duration-200">
+                    class="relative rounded-2xl bg-white border border-gray-300 pt-4 shadow-md cursor-pointer hover:shadow-lg transition-shadow duration-200">
+                    <!-- Badge label -->
+                    <div v-if="bank.active !== null"
+                        class="absolute top-0 right-0 px-3 py-1 text-xs font-semibold rounded-bl-2xl rounded-tr-2xl z-10"
+                        :class="bank.active ? 'bg-green-500 text-white' : 'bg-yellow-400 text-gray-800'">
+                        {{ bank.active ? 'Active' : 'Pending' }}
+                    </div>
+
                     <div class="flex items-center justify-between mb-2">
                         <div class="ms-4">
                             <p class="text-gray-700 text-xl text-start">
-                                <span class="font-bold text-gray-800">{{ bank.bank }}</span>
+                                <span class="font-bold text-gray-800">{{ bank.name }}</span>
                             </p>
                             <p class="text-gray-700 text-xl text-start">
                                 <span class="text-gray-800">{{ bank.account }}</span>
@@ -44,26 +52,21 @@
                         </p>
                         <p class="text-700 text-sm text-center">
                             Proses Tarik:
-                            <span class="font-bold text-gray-800">{{ formatCurrency(bank.trx_out) }}</span>
+                            <span class="font-bold text-gray-800">{{ bank.trx_out }}</span>
                         </p>
                     </div>
                 </div>
             </router-link>
         </div>
     </div>
-    <CreateButton to="/bank-accont/register" />
 </template>
 <script>
-import CreateButton from '@/components/CreateButton.vue';
-import { useBankStore } from '@/stores/bank-sampah';
+import { useBankStore } from '@/stores/pengurus-bank-sampah';
 import { onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 
 export default {
     name: 'BankListView',
-    components: {
-        CreateButton // Daftarkan CreateButton agar bisa digunakan di template
-    },
     setup() {
         const bankStore = useBankStore();
         const { banks, loading, error } = storeToRefs(bankStore);
@@ -71,30 +74,10 @@ export default {
         onMounted(() => {
             bankStore.fetchBankAccounts();
         });
-
-        // --- Fungsi formatCurrency yang sudah diperbaiki ---
-        const formatCurrency = (val) => {
-            // Cek jika nilai null, undefined, atau 0
-            if (val === null || val === undefined || val === 0) {
-                return '-'; // Tampilkan '-'
-            }
-
-            // Gunakan NumberFormat untuk memformat angka
-            const formattedValue = new Intl.NumberFormat('id-ID', {
-                // style: 'currency', // Hapus baris ini untuk menghilangkan simbol mata uang
-                // currency: 'IDR',    // Hapus baris ini juga
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0,
-            }).format(val);
-
-            return formattedValue;
-        };
-
         return {
             banks,
             loading,
-            error,
-            formatCurrency,
+            error
         };
     },
 };

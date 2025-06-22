@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="handleSubmit" class="md:max-w-[97%] mx-auto p-6 bg-white shadow-md rounded-lg space-y-6">
+  <form @submit.prevent="handleSubmit" class="md:max-w-[97%] mx-auto p-6 bg-white space-y-6">
     <div v-for="field in fields" :key="field.name" class="flex flex-col mb-4">
       <label :for="field.name" class="block text-gray-700 border-gray-400 text-sm font-bold mb-2">{{ field.label
         }}</label>
@@ -18,7 +18,7 @@
         :disabled="field.disabled"
         class="shadow appearance-none border rounded-xl w-full py-2 px-3 text-gray-700 border-gray-400 leading-tight focus:outline-none focus:shadow-outline text-xl"
         :class="{ 'bg-gray-100 cursor-not-allowed': field.disabled }">
-        <option disabled value="">Pilih salah satu</option>
+        <option disabled value="">Silahkan pilih</option>
         <option v-for="(option, index) in field.options" :key="index"
           :value="getSelectOptionValue(option, field.defaultValue)">
           {{ getSelectOptionLabel(option) }}
@@ -53,7 +53,7 @@
       </button>
       <button type="submit"
         class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-xl transition duration-150 ease-in-out">
-        SIMPAN
+         {{ buttonText }}
       </button>
     </div>
   </form>
@@ -61,6 +61,15 @@
 
 <script>
 export default {
+  computed: {
+    buttonText() {
+      const path = this.$route.path.toLowerCase()
+      if (path.includes('/new')) return 'Simpan'
+      if (path.includes('/edit')) return 'Ubah'
+      if (path.includes('/register')) return 'Daftar'
+      return 'Kirim'
+    }
+  },
   props: {
     fields: {
       type: Array,
@@ -81,7 +90,7 @@ export default {
   },
   data() {
     return {
-      formData: {}
+      formData: {},
     }
   },
   watch: {
@@ -89,7 +98,7 @@ export default {
       handler(newVal) {
         this.formData = { ...newVal };
         // Inisialisasi nilai default untuk checkbox jika tidak ada di model
-        this.fields.forEach(field => {
+        (this.fields || []).forEach(field => {
           if (field.type === 'checkbox' && this.formData[field.name] === undefined) {
             this.$set(this.formData, field.name, false); // Set default to false
           }

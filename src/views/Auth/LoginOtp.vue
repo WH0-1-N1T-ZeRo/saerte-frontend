@@ -253,7 +253,7 @@ export default {
           // Emit event untuk komponen induk atau gunakan Vue Router
           this.$emit('login-success', this.phoneNumber);
           if (router) { // Pastikan router terimport dan tersedia
-            router.push('/'); // Ganti dengan path halaman utama Anda
+            router.push('/beranda'); // Ganti dengan path halaman utama Anda
           } else {
             console.warn('Vue Router tidak ditemukan. Pastikan Anda mengimpor dan menggunakannya.');
             // Fallback: reload halaman atau navigasi manual

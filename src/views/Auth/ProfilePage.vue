@@ -1,11 +1,11 @@
 <template>
-  <div class="px-4 bg-gray-100 min-h-full">
-    <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+  <div class=" bg-gray-100 min-h-full">
+    <div class="bg-white p-6 px-10 shadow-md mb-6">
       <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">Data Profil</h2>
 
       <div class="mb-4">
         <label class="block text-gray-600 text-sm font-medium mb-1">Nomor Telepon:</label>
-        <p class="text-gray-800 font-semibold text-lg">{{ userProfile.no_telp }}</p>
+        <p class="text-gray-800 font-semibold text-lg">{{ userProfile.phone }}</p>
       </div>
 
       <div class="grid grid-cols-2 gap-4 mb-4">
@@ -32,7 +32,7 @@
         </div>
         <div>
           <label class="block text-gray-600 text-sm font-medium mb-1">Alamat:</label>
-          <p class="text-gray-800">{{ userProfile.rt }}</p>
+          <p class="text-gray-800">{{ userProfile.alamat }}</p>
         </div>
       </div>
 
@@ -64,6 +64,7 @@
 </template>
 
 <script>
+import api from '@/services/api';
 export default {
   props: {
     userProfile: {
@@ -72,8 +73,23 @@ export default {
     }
   },
   methods: {
-    logout() {
-      this.$emit('logout');
+    async logout() {
+      try {
+        const response = await api.post("/auth/logout", {}, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          }
+        });
+
+        if (response.status === 200) {
+          this.$emit('logout');
+          localStorage.removeItem('authToken'); // optional, kalau mau hapus token setelah logout sukses
+        } else {
+          console.warn("Logout gagal, status bukan 200:", response.status);
+        }
+      } catch (error) {
+        console.error("Logout error:", error);
+      }
     }
   }
 };

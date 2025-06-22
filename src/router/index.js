@@ -40,17 +40,36 @@ import BankSampahPage from '@/views/BankSampah/BankSampahPage.vue';
 import CCTVPage from '@/views/CCTV/CCTVPage.vue';
 
 // 📁 views/Form/
-import FormBankSampah from '@/views/BankSampah/FormBankSampah.vue';
+import BankSampahPengurus from '@/views/Pengurus/BankSampah/BankSampahPage.vue';
+import FormBankSampah from '@/views/Pengurus/BankSampah/FormBankSampah.vue';
 
 // 📁 views/
 import ChatListPage from '@/views/ChatListPage.vue';
 import ChatRoomPage from '@/views/ChatRoomPage.vue';
 
+// 📁 views/WasteItem
+import WasteItem from '@/views/Pengurus/WasteItem/WasteItem.vue';
+import FormWasteItem from '@/views/Pengurus/WasteItem/FormWasteItem.vue';
+
+// Type User
+import { useUserStore } from '@/stores/user';
+// 📁 views/WasteItem
+import MenuPengurus from '@/views/MenuPengurus.vue';
+import PengurusBank from '@/views/Pengurus/BankSampah/Bank.vue';
+import MenuWarga from '@/views/MenuWarga.vue';
+import FormPenarikan from '@/views/Pengurus/BankSampah/FormPenarikan.vue';
+import PengurusIuran from '@/views/Pengurus/Iuran/PengurusIuran.vue';
+
+
 const routes = [
-  { path: '/login', name: 'Login', component: LoginPage, meta: { requiresAuth: false, title: 'SaERTE' } },
-  { path: '/register', name: 'Register', component: Register, meta: { requiresAuth: false, title: 'Daftar SaERTE' } },
-  { path: '/lupa-sandi', name: 'ResetPassword', component: ResetPassword, meta: { requiresAuth: false, title: 'Lupa Sandi' } },
-  { path: '/', name: 'Landing', component: LandingPage, meta: { requiresAuth: true, title: 'SaERTE - v.01' } },
+  { path: '/login', name: 'Login', component: LoginPage, meta: { guestOnly: true, requiresAuth: false, title: 'Login SaERTE' } },
+  { path: '/register', name: 'Register', component: Register, meta: { guestOnly: true, requiresAuth: false, title: 'Daftar SaERTE' } },
+  { path: '/lupa-sandi', name: 'ResetPassword', component: ResetPassword, meta: { guestOnly: true, requiresAuth: false, title: 'Lupa Sandi' } },
+
+  { path: '/', name: 'Landing', component: LandingPage, meta: { requiresAuth: false, title: 'SaERTE' } },
+  { path: '/Beranda', name: 'Beranda', component: MenuWarga, meta: { requiresAuth: true, title: 'SaERTE - v.1.25.6.22' } },
+  { path: '/Pengurus', name: 'MenuPengurus', component: MenuPengurus, meta: { requiresAuth: true, title: 'SaERTE - Pengurus' } },
+
 
   { path: '/profile', name: 'Profil', component: ProfilePage, meta: { requiresAuth: true, title: 'Profil' } },
   { path: '/profile/edit', name: 'Edit Profil', component: EditProfile, meta: { requiresAuth: true, title: 'Edit Profil' } },
@@ -59,11 +78,17 @@ const routes = [
 
   // { path: '/dashboard', name: 'Dashboard', component: DashboardPage, meta: { requiresAuth: true, title: 'Dashboard RT' } },
 
+  { path: '/waste-bank-pengurus', name: 'Pengurus', component: PengurusBank, meta: { requiresAuth: true, requiresAkses: 'Pengurus', title: 'Nasabah' } },
+  { path: '/waste-item', name: 'Item-Sampah', component: WasteItem, meta: { requiresAuth: true, requiresAkses: 'Pengurus', title: 'Item Sampah' } },
+  { path: '/waste-item/new', name: 'Form-Item-Sampah', component: FormWasteItem, meta: { requiresAuth: true, requiresAkses: 'Pengurus', title: 'Item Baru' } },
+
   { path: '/surat-pengantar', name: 'SuratPengantar', component: SuratPengantarPage, meta: { requiresAuth: true, title: 'Permintaan Surat' } },
 
   { path: '/kegiatan', name: 'Kegiatan', component: KegiatanPage, meta: { requiresAuth: true, title: 'Kegiatan RT' } },
 
   { path: '/saran-keluhan', name: 'SaranKeluhan', component: SaranKeluhanPage, meta: { requiresAuth: true, title: 'Saran dan Keluhan' } },
+
+  { path: '/pengurus-iuran', name: 'PengurusIuran', component: PengurusIuran, meta: { requiresAuth: true, title: 'Pengurus Iuran' } },
 
   { path: '/iuran-warga', name: 'IuranWarga', component: IuranWargaPage, meta: { requiresAuth: true, title: 'Iuran Warga' } },
   { path: '/iuran/new', name: 'FormIuran', component: FormIuran, meta: { requiresAuth: true, title: 'Tambah Iuran' } },
@@ -74,15 +99,16 @@ const routes = [
   { path: '/cctv', name: 'CCTV', component: CCTVPage, meta: { requiresAuth: true, title: 'Live CCTV RT' } },
 
   { path: '/bank', name: 'Bank', component: Bank, meta: { requiresAuth: true, title: 'Bank Sampah - Rekening' } },
-  { path: '/bank-accont/new', name: 'AkunBank', component: FormBankAccount, meta: { requiresAuth: true, title: 'Daftar Akun Bank' } },
+  { path: '/bank-accont/register', name: 'AkunBank', component: FormBankAccount, meta: { requiresAuth: true, title: 'Daftar Akun Bank' } },
   { path: '/bank-sampah/:id', name: 'BankSampah', component: BankSampahPage, meta: { requiresAuth: true, title: 'Bank Sampah - Transaksi' } },
+  { path: '/bank-sampah/pengurus/:id', name: 'BankSampahPengurus', component: BankSampahPengurus, meta: { requiresAuth: true,requiresAkses: 'Pengurus', title: 'Detail Nasabah' } },
   { path: '/bank-sampah/new', name: 'FormBankSampah', component: FormBankSampah, meta: { requiresAuth: true, title: 'Setoran Sampah' } },
-  // { path: '/bank-sampah/edit/:id',name: 'FormBankSampah', component: FormBankSampah, meta: { requiresAuth: true, title: 'Tambah Setoran Sampah'} },
+  { path: '/bank-sampah/pengurus/widraw',name: 'FormPenarikan', component: FormPenarikan, meta: { requiresAuth: true,requiresAkses: 'Pengurus' , title: 'Penarikan Dana'} },
 
   { path: '/chat', name: 'ChatList', component: ChatListPage, meta: { requiresAuth: true, title: 'Obrolan RT' } },
   { path: '/chat/:id', name: 'ChatRoom', component: ChatRoomPage, props: true, meta: { requiresAuth: true, title: 'Obrolan', hideNav: true } },
 
-  // { path: '/:catchAll(.*)', redirect: { name: 'Login' } },
+  { path: '/:catchAll(.*)', redirect: { name: 'Landing' } },
 ];
 
 const router = createRouter({
@@ -90,34 +116,31 @@ const router = createRouter({
   routes,
 });
 
-// ✅ Guard login sederhana
-// router.beforeEach((to, from, next) => {
-//   // const isLoggedIn = 'true'; // Bypass login protection
-  
-//   if (to.meta.requiresAuth && !isLoggedIn) {
-//     next({ name: 'Login' });
-//   } else if (to.name === 'Login' && isLoggedIn) {
-//     next({ name: 'Landing' });
-//   } else {
-//     next();
-//   }
-// });
-// Contoh Navigation Guard untuk cek otentikasi
+
 router.beforeEach((to, from, next) => {
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-  // const isAuthenticated = localStorage.getItem('token'); // Asumsi token disimpan di localStorage
-  const isAuthenticated = localStorage.getItem('isLoggedIn') === 'true';
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+  const requiredAkses = to.meta.requiresAkses // misalnya 'pengurus' atau 'admin'
+
+  const isAuthenticated = localStorage.getItem('isLoggedIn') === 'true'
+  const loggedIn = !!localStorage.getItem('authToken');
+  const userStore = useUserStore()
 
   if (requiresAuth && !isAuthenticated) {
-    next({ name: 'Login' }); // Redirect ke login jika tidak terotentikasi
-  } else {
-    next();
+    // Tidak login, redirect ke login
+    return next({ name: 'Login' })
   }
-});
 
-// ✅ Set judul halaman
-router.afterEach((to) => {
-  document.title = to.meta.title || 'SaERTE';
-});
+   if (to.meta.guestOnly && loggedIn) {
+    return next('/beranda'); // kalau udah login, cegah buka login
+  }
+
+  if (requiredAkses && userStore.profile.typeAkses !== requiredAkses) {
+    // Login, tapi tidak punya akses sesuai meta.requiresAkses
+    return next({ name: 'Landing' }) // Buatkan halaman ini kalau belum ada
+  }
+
+  next()
+})
+
 
 export default router;

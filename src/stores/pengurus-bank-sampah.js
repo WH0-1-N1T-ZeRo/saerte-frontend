@@ -28,7 +28,7 @@ export const useBankStore = defineStore('bank', {
             this.error = null;
             try {
                 const token = localStorage.getItem('authToken');
-                const response = await api.get('/wbnk/account', {
+                const response = await api.get('/wbnk/accounts', {
                     headers: {
                         Authorization: `Bearer ${this.token}`,
                     },
@@ -47,7 +47,7 @@ export const useBankStore = defineStore('bank', {
             this.selectedError = null;
             try {
                 const token = localStorage.getItem('authToken');
-                const response = await api.get(`/wbnk/account?id=${id}`, {
+                const response = await api.get(`/wbnk/accounts?id=${id}`, {
                     headers: {
                         Authorization: `Bearer ${this.token}`,
                     },

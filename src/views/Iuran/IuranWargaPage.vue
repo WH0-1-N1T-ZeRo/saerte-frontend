@@ -106,7 +106,6 @@
 
 <script>
 import CreateButton from '@/components/CreateButton.vue';
-import axios from 'axios'; // Pastikan axios diimpor jika digunakan
 import api from '@/services/api'; // Pastikan path ini benar
 
 export default {
@@ -189,7 +188,7 @@ export default {
     },
     async fetchIuran() {
       try {
-        const response = await api.get(`/iuran/?skip=0&limit=100&akun_id=1`, {
+        const response = await api.get(`/cntr/contribution`, {
           headers: {
             'Authorization': `Bearer ${this.token}`,
             'Accept': 'application/json'

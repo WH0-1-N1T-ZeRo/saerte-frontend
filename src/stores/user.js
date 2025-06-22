@@ -5,16 +5,14 @@ import api from '../services/api'; // Pastikan path ke api.js benar
 export const useUserStore = defineStore('user', {
   state: () => ({
     profile: {
-      no_telp: localStorage.getItem('loggedInPhone') || '',
+      no_telp: '',
       id: null,
       nama: 'Guest User',
       nik: '',
       hoby: [],
       interes: [],
       desa: '',
-      rw: '',
-      rt: '',
-      noRumah: '',
+      address: '',
       dataKk: [],
       typeAkses: '',
       color: ['#4A90E2', '#50E3C2', '#F5A623', '#9013FE'],
@@ -30,10 +28,6 @@ export const useUserStore = defineStore('user', {
     setLoginStatus(status) {
       this.isLoggedIn = status;
       localStorage.setItem('isLoggedIn', status);
-    },
-    setLoggedInPhone(phoneNumber) {
-      this.profile.no_telp = phoneNumber;
-      localStorage.setItem('loggedInPhone', phoneNumber);
     },
     setAuthToken(token) {
       localStorage.setItem('authToken', token);
@@ -87,15 +81,14 @@ export const useUserStore = defineStore('user', {
         console.log('Data dari API /profile:', apiData);
 
         // Memetakan data dari API ke state profil
-        this.profile.id = apiData.id;
-        this.profile.no_telp = apiData.telepon || this.profile.no_telp;
+        this.profile.id = apiData.resident_id;
+        this.profile.phone = apiData.resident.phone;
         this.profile.nama = apiData?.name || 'Nama Tidak Diketahui';
-        this.profile.nik = apiData.administrator?.nik_id || '';
-        this.profile.hoby = apiData.administrator?.hobby ? apiData.administrator.hobby.split(',').map(item => item.trim()) : [];
-        this.profile.interes = apiData.administrator?.interes ? apiData.administrator.interes.split(',').map(item => item.trim()) : [];
-        this.profile.rw = apiData.rukunwarga_kd || '';
-        this.profile.rt = apiData.nama_rt || '';
-        this.profile.typeAkses = 'Warga'; // Sesuaikan jika ada logika peran
+        this.profile.nik = apiData.resident?.nik_id || '';
+        this.profile.hoby = apiData.resident?.hobby ? apiData.resident.hobby.split(',').map(item => item.trim()) : [];
+        this.profile.interes = apiData.resident?.interest ? apiData.resident.interest.split(',').map(item => item.trim()) : [];
+        this.profile.alamat = apiData.resident.address;
+        this.profile.typeAkses = apiData.waste_bank_id!=null ? 'Pengurus' :'Warga'; // Sesuaikan jika ada logika peran
 
         // Simpan data profil yang baru diambil ke localStorage
         localStorage.setItem('userProfileData', JSON.stringify(this.profile));
@@ -133,9 +126,7 @@ export const useUserStore = defineStore('user', {
         hoby: [],
         interes: [],
         desa: '',
-        rw: '',
-        rt: '',
-        noRumah: '',
+        address: '',
         dataKk: [],
         typeAkses: '',
         color: ['#4A90E2', '#50E3C2', '#F5A623', '#9013FE'],

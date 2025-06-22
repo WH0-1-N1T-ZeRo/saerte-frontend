@@ -1,12 +1,12 @@
 <template>
-    <div class="max-w-md mx-auto mt-6 p-4 bg-white rounded-lg shadow">
-        <h2 class="text-xl font-bold mb-4 text-gray-800">Pilih Bank Sampah</h2>
+    <div class="max-w-md mx-auto mt-6 bg-white shadow">
+        <!-- <h2 class="text-xl font-bold mb-4 text-gray-800">Pilih Bank Sampah</h2> -->
 
         <DynamicForm :fields="bankSelectFields" :model="formData" @submit="handleFormSubmit"
             @cancel="handleFormCancel" />
 
         <Toast :title="toast.title" :message="toast.message" :duration="toast.duration" :show="toast.show" />
-
+        <p class="text-gray-500 px-6 pb-4">Pendaftaran akan melalui tahap persetujuan petugas</p>
     </div>
 </template>
 
@@ -79,10 +79,10 @@ onMounted(async () => {
 // --- HANDLE SUBMIT ---
 const handleFormSubmit = async (data) => {
     const waste_bank_id = data.selectedBankId;
-    const resident_id =  1;
-    // profile.value.id ||
-    const token =  'c739084314eddb8d8fead52fcae358585fc0a0a41350b9035493d4cf69badacf';
-//localStorage.getItem('authToken') ||
+    const resident_id = profile.value.id //||1;
+    // 
+    const token = localStorage.getItem('authToken') //||'c739084314eddb8d8fead52fcae358585fc0a0a41350b9035493d4cf69badacf';
+    //
     const selectedBank = bankList.value.find(bank => bank.id === waste_bank_id);
 
     if (!selectedBank) {

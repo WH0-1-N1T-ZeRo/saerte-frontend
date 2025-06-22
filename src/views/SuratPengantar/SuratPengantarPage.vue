@@ -265,7 +265,7 @@ export default {
       this.uploadedFiles = [];
       this.submittedRequestId = null;
       // FIX: Removed the backslash before $router
-      this.$router.push('/');
+      this.$router.push('/beranda');
     }
   }
 };

@@ -49,6 +49,19 @@
             Belum ada riwayat transaksi untuk rekening ini.
           </div>
           <div v-else class="space-y-3">
+            <div class="flex justify-between gap-4 mt-4">
+              <!-- Tombol Deposit -->
+              <a href="/bank-sampah/new"
+                class="w-full text-center bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200 ease-in-out">
+                Deposit
+              </a>
+
+              <!-- Tombol Withdraw -->
+              <a href="/bank-sampah/pengurus/widraw"
+                class="w-full text-center bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200 ease-in-out">
+                Withdraw
+              </a>
+            </div>
             <div v-for="transaction in selectedTransactions" :key="transaction.id"
               class="bg-gray-50 border border-gray-200 rounded-lg p-3 shadow-sm">
               <div class="flex justify-between items-center text-sm font-semibold mb-1">
@@ -67,7 +80,7 @@
               <div class="flex justify-between">
                 <p class="text-gray-600 text-base">
                   <span class="">
-                    {{transaction.reference}}
+                    {{ transaction.reference }}
                   </span>
                 </p>
                 <p v-if="transaction.amount" class="text-gray-800 text-base font-bold">
@@ -83,11 +96,9 @@
       </div>
     </div>
   </div>
-  <!-- <CreateButton to="/bank-sampah/new" /> -->
 </template>
 
 <script setup>
-// import CreateButton from '@/components/CreateButton.vue';
 import { onMounted, watch, ref } from 'vue'; // Tambahkan 'ref'
 import { storeToRefs } from 'pinia';
 import { useRoute } from 'vue-router';

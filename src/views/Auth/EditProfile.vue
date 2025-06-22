@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 bg-white rounded-2xl shadow-md max-w-3xl mx-auto">
+  <div class="p-4 bg-white shadow-md max-w-3xl mx-auto">
     <h2 class="text-2xl font-bold mb-4 text-center">Edit Profil</h2>
 
     <DynamicForm
@@ -30,7 +30,7 @@ export default {
       // localFormData akan menyimpan data yang diikat ke form
       localFormData: {
         nama: '', // Dipetakan dari userProfile.nama
-        no_telp: '', // Dipetakan dari userProfile.no_telp
+        phone: '', // Dipetakan dari userProfile.phone
         password: '', // Password baru, mungkin kosong jika tidak ingin diubah
         nik: '', // Dipetakan dari userProfile.nik (No. KTP)
         no_kk: '', // Properti baru untuk No. KK jika ada di API Anda
@@ -39,7 +39,7 @@ export default {
       },
       userFields: [
         { name: 'nama', label: 'Nama Lengkap', type: 'text', required: true },
-        { name: 'no_telp', label: 'No. Telepon', type: 'text', required: true },
+        { name: 'phone', label: 'No. Telepon', type: 'text', required: true },
         { name: 'password', label: 'Password Baru', type: 'password' }, // Opsional
         { name: 'nik', label: 'NIK (No. KTP)', type: 'text', required: true },
         { name: 'no_kk', label: 'No. Kartu Keluarga', type: 'text' }, // Asumsi ada field KK
@@ -61,7 +61,7 @@ export default {
     // Ini penting agar form terisi dengan data pengguna saat ini
     if (this.userProfile) {
       this.localFormData.nama = this.userProfile.nama || '';
-      this.localFormData.no_telp = this.userProfile.no_telp || '';
+      this.localFormData.phone = this.userProfile.phone || '';
       this.localFormData.nik = this.userProfile.nik || '';
       // Jika hobi dan interes adalah array di store, ubah ke string untuk form input
       this.localFormData.hoby = this.userProfile.hoby ? this.userProfile.hoby.join(', ') : '';
@@ -87,7 +87,7 @@ export default {
       // Buat objek data yang akan dikirim ke API
       const dataToUpdate = {
         name: this.localFormData.nama, // Sesuaikan dengan nama field di API Anda
-        telepon: this.localFormData.no_telp, // Sesuaikan dengan nama field di API Anda
+        telepon: this.localFormData.phone, // Sesuaikan dengan nama field di API Anda
         nik_id: this.localFormData.nik, // Sesuaikan dengan nama field di API Anda
         hobby: this.localFormData.hoby, // API mungkin mengharapkan string koma
         interes: this.localFormData.interes, // API mungkin mengharapkan string koma
@@ -135,7 +135,7 @@ export default {
       // Anda bisa mengembalikan form ke nilai awal dari store
       if (this.userProfile) {
         this.localFormData.nama = this.userProfile.nama || '';
-        this.localFormData.no_telp = this.userProfile.no_telp || '';
+        this.localFormData.phone = this.userProfile.phone || '';
         this.localFormData.nik = this.userProfile.nik || '';
         this.localFormData.hoby = this.userProfile.hoby ? this.userProfile.hoby.join(', ') : '';
         this.localFormData.interes = this.userProfile.interes ? this.userProfile.interes.join(', ') : '';
